@@ -16,33 +16,30 @@ terraform {
 module "main" {
   source = "../.."
 
-  name = "ABC"
+  ldap_providers = [{
+    hostname_ip = "1.1.1.1"
+    description = "My description"
+  }]
 }
 
-data "aci_rest_managed" "fvTenant" {
-  dn = "uni/tn-ABC"
+data "aci_rest_managed" "aaaLdapProvider" {
+  dn = "uni/userext/ldapext/ldapprovider-1.1.1.1"
 
   depends_on = [module.main]
 }
 
-resource "test_assertions" "fvTenant" {
-  component = "fvTenant"
+resource "test_assertions" "aaaLdapProvider" {
+  component = "aaaLdapProvider"
 
   equal "name" {
     description = "name"
-    got         = data.aci_rest_managed.fvTenant.content.name
-    want        = "ABC"
+    got         = data.aci_rest_managed.aaaLdapProvider.content.name
+    want        = "1.1.1.1"
   }
 
-  equal "nameAlias" {
-    description = "nameAlias"
-    got         = data.aci_rest_managed.fvTenant.content.nameAlias
-    want        = ""
-  }
-
-  equal "descr" {
-    description = "descr"
-    got         = data.aci_rest_managed.fvTenant.content.descr
-    want        = ""
+  equal "description" {
+    description = "description"
+    got         = data.aci_rest_managed.aaaLdapProvider.content.description
+    want        = "1.1.1.1"
   }
 }
