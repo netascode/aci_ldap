@@ -76,9 +76,7 @@ module "aci_ldap" {
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_dn"></a> [dn](#output\_dn) | Distinguished name of `aaaLdapEp` object. |
+No outputs.
 
 ## Resources
 
