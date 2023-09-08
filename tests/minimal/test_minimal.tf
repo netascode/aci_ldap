@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.0.0"
+  required_version = ">= 1.3.0"
 
   required_providers {
     test = {
@@ -37,9 +37,9 @@ resource "test_assertions" "aaaLdapProvider" {
     want        = "1.1.1.1"
   }
 
-  equal "description" {
-    description = "description"
-    got         = data.aci_rest_managed.aaaLdapProvider.content.description
-    want        = "1.1.1.1"
+  equal "descr" {
+    description = "descr"
+    got         = data.aci_rest_managed.aaaLdapProvider.content.descr
+    want        = "My description"
   }
 }

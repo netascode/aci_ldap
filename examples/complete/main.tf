@@ -1,6 +1,7 @@
 module "aci_ldap" {
   source  = "netascode/ldap/aci"
-  version = ">= 0.0.1"
+  version = ">= 0.1.0"
+
   ldap_providers = [{
     hostname_ip          = "1.1.1.1"
     description          = "My Description"

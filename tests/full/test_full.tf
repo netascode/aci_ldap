@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.0.0"
+  required_version = ">= 1.3.0"
 
   required_providers {
     test = {
@@ -43,7 +43,7 @@ module "main" {
       name = "all"
       roles = [{
         name           = "admin"
-        privilege_type = "read"
+        privilege_type = "write"
       }]
     }]
   }]
@@ -77,25 +77,25 @@ resource "test_assertions" "aaaLdapProvider" {
   equal "port" {
     description = "port"
     got         = data.aci_rest_managed.aaaLdapProvider.content.port
-    want        = 149
+    want        = "149"
   }
 
-  equal "bind_dn" {
-    description = "bind_dn"
+  equal "rootdn" {
+    description = "rootdn"
     got         = data.aci_rest_managed.aaaLdapProvider.content.rootdn
     want        = "CN=testuser,OU=Employees,OU=Cisco users,DC=cisco,DC=com"
   }
 
-  equal "base_dn" {
-    description = "base_dn"
-    got         = data.aci_rest_managed.aaaLdapProvider.content.base_dn
+  equal "basedn" {
+    description = "basedn"
+    got         = data.aci_rest_managed.aaaLdapProvider.content.basedn
     want        = "OU=Employees,OU=Cisco users,DC=cisco,DC=com"
   }
 
   equal "enableSSL" {
     description = "enableSSL"
     got         = data.aci_rest_managed.aaaLdapProvider.content.enableSSL
-    want        = true
+    want        = "yes"
   }
 
   equal "filter" {
@@ -104,15 +104,9 @@ resource "test_assertions" "aaaLdapProvider" {
     want        = "cn=$userid"
   }
 
-  equal "password" {
-    description = "password"
-    got         = data.aci_rest_managed.aaaLdapProvider.content.password
-    want        = "ABCDEFGH"
-  }
-
-  equal "monitoring_username" {
-    description = "monitoring_username"
-    got         = data.aci_rest_managed.aaaLdapProvider.content.monitoring_username
+  equal "monitoringUser" {
+    description = "monitoringUser"
+    got         = data.aci_rest_managed.aaaLdapProvider.content.monitoringUser
     want        = "USER1"
   }
 
@@ -131,13 +125,13 @@ resource "test_assertions" "aaaLdapProvider" {
   equal "timeout" {
     description = "timeout"
     got         = data.aci_rest_managed.aaaLdapProvider.content.timeout
-    want        = 10
+    want        = "10"
   }
 
   equal "retries" {
     description = "retries"
     got         = data.aci_rest_managed.aaaLdapProvider.content.retries
-    want        = 3
+    want        = "3"
   }
 }
 
@@ -151,10 +145,10 @@ data "aci_rest_managed" "aaaRsSecProvToEpg" {
 resource "test_assertions" "aaaRsSecProvToEpg" {
   component = "aaaRsSecProvToEpg"
 
-  equal "name" {
-    description = "name"
-    got         = data.aci_rest_managed.aaaRsSecProvToEpg.content.name
-    want        = "OOB1"
+  equal "tDn" {
+    description = "tDn"
+    got         = data.aci_rest_managed.aaaRsSecProvToEpg.content.tDn
+    want        = "uni/tn-mgmt/mgmtp-default/oob-OOB1"
   }
 }
 
@@ -217,12 +211,12 @@ resource "test_assertions" "aaaUserRole" {
   equal "privilege_type" {
     description = "privilege_type"
     got         = data.aci_rest_managed.aaaUserRole.content.privType
-    want        = "write"
+    want        = "writePriv"
   }
 }
 
 data "aci_rest_managed" "aaaLdapGroupMap" {
-  dn = "uni/userext/ldapext/ldapgroupma-test-users-map"
+  dn = "uni/userext/ldapext/ldapgroupmap-test-users-map"
 
   depends_on = [module.main]
 }
@@ -238,7 +232,7 @@ resource "test_assertions" "aaaLdapGroupMap" {
 }
 
 data "aci_rest_managed" "aaaLdapGroupMapRuleRef" {
-  dn = "uni/userext/ldapext/ldapgroupma-test-users-map/ldapgroupmapruleref-test-users-map"
+  dn = "uni/userext/ldapext/ldapgroupmap-test-users-map/ldapgroupmapruleref-test-users-rules"
 
   depends_on = [module.main]
 }
@@ -249,6 +243,6 @@ resource "test_assertions" "aaaLdapGroupMapRuleRef" {
   equal "name" {
     description = "name"
     got         = data.aci_rest_managed.aaaLdapGroupMapRuleRef.content.name
-    want        = "test-users-map"
+    want        = "test-users-rules"
   }
 }

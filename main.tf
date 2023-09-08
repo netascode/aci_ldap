@@ -1,20 +1,16 @@
-resource "aci_rest_managed" "aaaLdapEp" {
-  dn         = "uni/userext/ldapext"
-  class_name = "aaaLdapEp"
-}
-
 resource "aci_rest_managed" "aaaLdapProvider" {
   for_each = { for prov in var.ldap_providers : prov.hostname_ip => prov }
 
-  dn         = "${aci_rest_managed.aaaLdapEp.dn}/ldapprovider-${each.key}"
+  dn         = "uni/userext/ldapext/ldapprovider-${each.key}"
   class_name = "aaaLdapProvider"
   content = {
     name               = each.value.hostname_ip
     descr              = each.value.description
     SSLValidationLevel = each.value.ssl_validation_level
     basedn             = each.value.base_dn
-    enableSSL          = each.value.enable_ssl
+    enableSSL          = each.value.enable_ssl ? "yes" : "no"
     filter             = each.value.filter
+    attribute          = each.value.attribute
     monitorServer      = each.value.monitoring == true ? "enabled" : "disabled"
     monitoringUser     = each.value.monitoring == true ? each.value.monitoring_username : null
     monitoringPassword = each.value.monitoring == true ? each.value.monitoring_password : null
@@ -43,7 +39,7 @@ resource "aci_rest_managed" "aaaRsSecProvToEpg" {
 resource "aci_rest_managed" "aaaLdapGroupMapRule" {
   for_each = { for rule in var.group_map_rules : rule.name => rule }
 
-  dn         = "${aci_rest_managed.aaaLdapEp.dn}/ldapgroupmaprule-${each.key}"
+  dn         = "uni/userext/ldapext/ldapgroupmaprule-${each.key}"
   class_name = "aaaLdapGroupMapRule"
   content = {
     name    = each.value.name
@@ -97,14 +93,14 @@ resource "aci_rest_managed" "aaaUserRole" {
   class_name = "aaaUserRole"
   content = {
     name     = each.value.name
-    privType = each.value.priv
+    privType = each.value.priv == "read" ? "readPriv" : (each.value.priv == "write" ? "writePriv" : null)
   }
 }
 
 resource "aci_rest_managed" "aaaLdapGroupMap" {
   for_each = { for group in var.group_maps : group.name => group }
 
-  dn         = "${aci_rest_managed.aaaLdapEp.dn}/ldapgroupmap-${each.key}"
+  dn         = "uni/userext/ldapext/ldapgroupmap-${each.key}"
   class_name = "aaaLdapGroupMap"
   content = {
     name = each.value.name
